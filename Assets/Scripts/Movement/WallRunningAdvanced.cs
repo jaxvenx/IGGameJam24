@@ -151,7 +151,6 @@ public class WallRunningAdvanced : MonoBehaviour
             rb.AddForce(Vector3.up * gravityCounterForce, ForceMode.Force);
     }
 
-
     private void StopWallRun()
     {
         pm.wallrunning = false;
@@ -166,7 +165,7 @@ public class WallRunningAdvanced : MonoBehaviour
 
         // Determine the correct wall normal based on which wall the player is on
         Vector3 wallNormal = wallRight ? rightWallhit.normal : leftWallhit.normal;
-        Vector3 jumpDirection = Vector3.up * wallJumpUpForce + wallNormal * wallJumpSideForce;
+        Vector3 jumpDirection = Vector3.up * wallJumpUpForce + wallNormal;
 
         // Reset y velocity and add force in jump direction
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
