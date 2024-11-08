@@ -70,3 +70,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+/Assets/BloodDecalsAndEffects
+/Assets/Color Studio
+/Assets/Kevin Iglesias/Basic Motions/_DemoScene
+/Assets/Kevin Iglesias
+/Assets/Plugins/PrimeTween/Demo
+/Assets/QuanticBrains
