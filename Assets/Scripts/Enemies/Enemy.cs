@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,6 +11,8 @@ public abstract class Enemy : MonoBehaviour
 
     [Header("Detection")]
     [SerializeField] private float sightRange = 10f;
+
+    protected Player _player;
     [SerializeField] protected Transform player;
     protected NavMeshAgent NavMeshAgent;
 
@@ -18,6 +21,7 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Start()
     {
         currentHealth = health;
+        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         NavMeshAgent = GetComponent<NavMeshAgent>();
     }
 
