@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-/// added if(pm.wallrunning) return;
-
 public class Sliding : MonoBehaviour
 {
     [Header("References")]
@@ -25,10 +22,10 @@ public class Sliding : MonoBehaviour
     [Header("Input")]
     public InputActionReference moveInput;
     public InputActionReference slideInput;
-    //public KeyCode slideKey = KeyCode.LeftControl;
     private float horizontalInput;
     private float verticalInput;
 
+    private Vector3 initialSlideDirection;
 
     private void Start()
     {
@@ -42,14 +39,6 @@ public class Sliding : MonoBehaviour
     {
         horizontalInput = moveInput.action.ReadValue<Vector2>().x;
         verticalInput = moveInput.action.ReadValue<Vector2>().y;
-        //horizontalInput = Input.GetAxisRaw("Horizontal");
-        //verticalInput = Input.GetAxisRaw("Vertical");
-
-        // if (slideInput.action.triggered && (horizontalInput != 0 || verticalInput != 0))
-        //     StartSlide();
-        //
-        // if (Input.GetKeyUp(slideKey) && pm.sliding)
-        //     StopSlide();
 
         if (slideInput.action.WasPressedThisFrame() && (horizontalInput != 0 || verticalInput != 0))
             StartSlide();
@@ -74,20 +63,23 @@ public class Sliding : MonoBehaviour
         rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
 
         slideTimer = maxSlideTime;
+
+        // Store the initial slide direction
+        initialSlideDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
     }
 
     private void SlidingMovement()
     {
-        Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        // Use the stored initial slide direction
+        Vector3 inputDirection = initialSlideDirection;
 
         // sliding normal
-        if(!pm.OnSlope() || rb.linearVelocity.y > -0.1f)
+        if (!pm.OnSlope() || rb.linearVelocity.y > -0.1f)
         {
             rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
 
             slideTimer -= Time.deltaTime;
         }
-
         // sliding down a slope
         else
         {

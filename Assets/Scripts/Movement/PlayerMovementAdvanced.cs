@@ -208,11 +208,11 @@ public class PlayerMovementAdvanced : MonoBehaviour
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
             }
         }
-        else if (grounded)
+        else if (grounded && !sliding)
         {
             rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
         }
-        else
+        else if (!grounded)
         {
             rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f * airMultiplier), ForceMode.Force);
         }
