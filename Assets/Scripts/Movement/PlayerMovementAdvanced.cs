@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
-using TMPro;
 using UnityEngine.InputSystem;
 
 public class PlayerMovementAdvanced : MonoBehaviour
 {
     [Header("Movement")]
-    private float moveSpeed;
-    private float desiredMoveSpeed;
-    private float lastDesiredMoveSpeed;
+    private float _moveSpeed;
+    private float _desiredMoveSpeed;
+    private float _lastDesiredMoveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
     public float slideSpeed;
@@ -74,9 +73,6 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public bool wallrunning;
     public bool dashing;
 
-    public TextMeshProUGUI text_speed;
-    public TextMeshProUGUI text_mode;
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -125,7 +121,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         if (dashing)
         {
             SetState(MovementState.dashing, dashSpeed);
-            desiredMoveSpeed = dashSpeed;
+            _desiredMoveSpeed = dashSpeed;
         }
         else if (wallrunning)
         {
@@ -152,34 +148,34 @@ public class PlayerMovementAdvanced : MonoBehaviour
             state = MovementState.air;
         }
 
-        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        if (Mathf.Abs(_desiredMoveSpeed - _lastDesiredMoveSpeed) > 4f && _moveSpeed != 0)
         {
             StopAllCoroutines();
             StartCoroutine(SmoothlyLerpMoveSpeed());
         }
         else
         {
-            moveSpeed = desiredMoveSpeed;
+            _moveSpeed = _desiredMoveSpeed;
         }
 
-        lastDesiredMoveSpeed = desiredMoveSpeed;
+        _lastDesiredMoveSpeed = _desiredMoveSpeed;
     }
 
     private void SetState(MovementState newState, float newSpeed)
     {
         state = newState;
-        desiredMoveSpeed = newSpeed;
+        _desiredMoveSpeed = newSpeed;
     }
 
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
         float time = 0;
-        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
-        float startValue = moveSpeed;
+        float difference = Mathf.Abs(_desiredMoveSpeed - _moveSpeed);
+        float startValue = _moveSpeed;
 
         while (time < difference)
         {
-            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            _moveSpeed = Mathf.Lerp(startValue, _desiredMoveSpeed, time / difference);
 
             if (OnSlope())
             {
@@ -196,7 +192,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
             yield return null;
         }
 
-        moveSpeed = desiredMoveSpeed;
+        _moveSpeed = _desiredMoveSpeed;
     }
 
     private void MovePlayer()
@@ -205,7 +201,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection(moveDirection) * (moveSpeed * 20f), ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection(moveDirection) * (_moveSpeed * 20f), ForceMode.Force);
 
             if (rb.linearVelocity.y > 0)
             {
@@ -214,11 +210,11 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
         else if (grounded)
         {
-            rb.AddForce(moveDirection.normalized * (moveSpeed * 10f), ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f), ForceMode.Force);
         }
         else
         {
-            rb.AddForce(moveDirection.normalized * (moveSpeed * 10f * airMultiplier), ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * (_moveSpeed * 10f * airMultiplier), ForceMode.Force);
         }
 
         if (!wallrunning)
@@ -231,18 +227,18 @@ public class PlayerMovementAdvanced : MonoBehaviour
     {
         if (OnSlope() && !exitingSlope)
         {
-            if (rb.linearVelocity.magnitude > moveSpeed)
+            if (rb.linearVelocity.magnitude > _moveSpeed)
             {
-                rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+                rb.linearVelocity = rb.linearVelocity.normalized * _moveSpeed;
             }
         }
         else
         {
             Vector3 flatVel = new(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-            if (flatVel.magnitude > moveSpeed)
+            if (flatVel.magnitude > _moveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
                 rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
             }
         }
